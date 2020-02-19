@@ -1,0 +1,25 @@
+﻿@using Foro.Models
+@model Cliente
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Formulario</h2>
+
+@using (Html.BeginForm("Resultado", "Home", FormMethod.Post))
+{
+
+    @Html.LabelFor(a => a.SummonerName)
+    @Html.TextBoxFor(z => z.SummonerName, new { @class = "form-control", placeholder = "Inserte su nombre de invocador" })<br />
+
+
+    @Html.DropDownListFor(a => a.Region,
+                              new SelectList(Enum.GetValues(typeof(Regiones))),
+                              "Seleccione su region", new { @class = "form-control" })
+                                                                                                   
+    <input type="submit" name="form" value="post" class="btn-success"/>
+}
+
+
+

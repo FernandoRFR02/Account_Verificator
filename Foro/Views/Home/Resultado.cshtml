@@ -1,0 +1,82 @@
+﻿@using System.IO;
+@using System.Data;
+@using Newtonsoft.Json;
+@using System.Net;
+@using Foro.Models
+@using Foro.Controllers
+@model Cliente
+
+@{
+    ViewBag.Title = "Resultado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <h2>Resultado</h2>
+
+
+    @{
+
+            Cliente clt = new Cliente();
+            HomeController hc = new HomeController();
+
+            Summoner summoner = new Summoner();
+
+            //Hace llamado al JSON especifico del usuario invocado
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(ViewBag.urlReq);
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            Stream stream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(stream);
+            //Separa los datos del JSON y los guarda en el modelo de Sumonner
+            {
+                var json = reader.ReadToEnd();
+                summoner = JsonConvert.DeserializeObject<Summoner>(json);
+            }
+
+        //Crea el url de la imagen del summoner
+        int icon = summoner.profileIconId;
+        string seeIcon()
+        {
+            string imgurl = "https://ddragon.leagueoflegends.com/cdn/10.3.1/img/profileicon/" + summoner.profileIconId + ".png";
+            return imgurl;
+        }
+        //Saca un icono aleatorio de los basicos que toda cuenta posee
+        string genIcon()
+        {
+            Random aleatorio = new Random();
+            int num;
+            num = aleatorio.Next(0, 28);
+            string Generado = "https://ddragon.leagueoflegends.com/cdn/10.3.1/img/profileicon/" + num + ".png";
+
+            return Generado;
+        }
+
+        <h2>Name</h2>@summoner.name
+        <h2>IconId</h2> <img src=@seeIcon() style="width: 10%" />
+        <h2>Summoner Level</h2>@summoner.summonerLevel
+        <br />
+        <hr />
+        <br />
+
+        <h2>Para verificar usa este icono</h2>
+        <img src=@genIcon() style="width: 10%" />
+
+        <input type="submit" Onclick=VerificarIcon() name="form" formtarget="_self" value="Verificar" class="btn-success" />
+
+        bool VerificarIcon()
+        {
+            Response.Redirect("Resultado");
+            @Response.Write("<script language=javascript>alert('Cuenta verificada');</script>");
+            if (genIcon() == seeIcon())
+            {
+                @Response.Write("<script language=javascript>alert('Cuenta verificada');</script>");
+            }
+            else
+            {
+                @Response.Write("<script language=javascript>alert('Verifique el icono, e intentelo de nuevo');</script>");
+            }
+
+            return true;
+        }
+
+
+    }
